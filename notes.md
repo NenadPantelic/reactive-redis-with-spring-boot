@@ -265,3 +265,28 @@ exec
 - Redis periodically flushes data to disk, but not for each and every command
 - useful to load a snapshot into Redis; when Redis is shutdown, it will try to save the state to disk
 - `bgsave` - it will use some additional threads to save the Redis state to disk
+
+## Redisson
+
+#### Redis libraries
+
+1. Jedis
+
+- fast
+- not thread safe/not scalable
+
+2. Lettuce (4k stars & actively maintained)
+
+- scalable & supports reactive streams
+- works with Spring Data Redis (there is no `ReactiveCRUDRepository`)
+- low level API compared to Redisson
+
+3. Redisson (16k stars & actively maintained)
+
+- scalable & supports reactive-streams
+- excellent abstraction
+- a lot of cool features & excellent documentation
+- works with Spring Data Redis (there is no `ReactiveCRUDRepository`)
+
+- you can leave both `Lettuce` & `Redisson`
+- https://redisson.pro/docs/
