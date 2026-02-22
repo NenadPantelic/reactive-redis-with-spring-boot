@@ -290,3 +290,16 @@ exec
 
 - you can leave both `Lettuce` & `Redisson`
 - https://redisson.pro/docs/
+
+- Redis stores everything as a string; to achieve better performance store data in binary format
+
+##### Redis notifications
+
+NOTE: this will not work out of the box, Redis will notify us
+We have to configure that mechanism to get the notification
+
+- adjust the redis.conf file (for permanent, production config)
+- or via the CONFIG SET (temporary thing)
+  There are various events for which Redis can react and notify you.
+  https://redis.io/docs/latest/develop/pubsub/keyspace-notifications/
+  `config set notify-keyspace-events AKE`
