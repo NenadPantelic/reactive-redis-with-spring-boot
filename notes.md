@@ -303,3 +303,7 @@ We have to configure that mechanism to get the notification
   There are various events for which Redis can react and notify you.
   https://redis.io/docs/latest/develop/pubsub/keyspace-notifications/
   `config set notify-keyspace-events AKE`
+
+- Redisson supports `LocalCachedMap` -> it gets the complete copy of the hash (map) from Redis and keep it locally without making additional network calls; it's a local cache indeed
+  - what if the hash (map) is updated in Redis server? In that case, Redis will notify the client that it should update the value stored locally with the new value.
+  - it's not part of the Reactive Redisson client, but the plain Redisson client

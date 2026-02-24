@@ -19,7 +19,7 @@ public class Lec02KeyValueObjectTest extends BaseTest {
         // use Jackson codec to store it as JSON
         // that JSON also contain the @class key which represents the full name of the class, so it knows how to
         // deserialize it
-//        RBucketReactive<Student> bucket = this.client.getBucket("student:1", JsonJacksonCodec.INSTANCE);
+        //  RBucketReactive<Student> bucket = this.client.getBucket("student:1", JsonJacksonCodec.INSTANCE);
 
         // To remove the class info from JSON
         RBucketReactive<Student> bucket = this.client.getBucket("student:1", new TypedJsonJacksonCodec(Student.class));
