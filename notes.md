@@ -307,3 +307,74 @@ We have to configure that mechanism to get the notification
 - Redisson supports `LocalCachedMap` -> it gets the complete copy of the hash (map) from Redis and keep it locally without making additional network calls; it's a local cache indeed
   - what if the hash (map) is updated in Redis server? In that case, Redis will notify the client that it should update the value stored locally with the new value.
   - it's not part of the Reactive Redisson client, but the plain Redisson client
+
+#### HyperLogLog
+
+- Use case
+  - very high load
+  - we want to know the number of unique IP addresses or unique visits
+  - can we put them into a set? We have to put the whole item, so it computes distinct values. For high volume, our set will grow significantly
+  - HyperLogLog is a probabilistic data structure; it will not store the actual item, it will give us the count estimation, it will be close to the actual number (deviation of 1% more or less)
+
+#### Pub/sub
+
+- Message queue - distributes messages across consumers; producer cannot produce a message to a full queue; consumer cannot consume from an empty queue
+- queue will distribute message among consumers, so they don't read the same message, but every message is consumed by one consumer
+- pub/sub works in a way that all subscribers listen to the same topic and all of them process same messages
+
+- Redis is very fast (70 000 req/s)
+
+### Spring Webflux Caching
+
+#### Use case 1: Caching
+
+- Reduce load on DB
+  - avoid query re-execution
+- Avoid tons of network calls
+  - storing API responses
+- Avoid rework
+  - Storing the complext computation results
+- Better throughput
+- Improved application response time
+- Better user experience
+
+- Spring + Redis
+
+  - Primary use case:
+    - Caching responses
+    - to reduce load on the database
+    - to reduce external API calls
+  - Why not app itself cannot cache?
+    - waste of memory (multiple instances can cache the same data)
+    - cache synchronization (if you have multiple instances of service, their in-memory caches must be synchronized then)
+
+- Cache aside pattern:
+  1. Read from cache
+  2. If not there, get it from DB/compute
+  3. Save it in cache for future use
+  4. Return the result
+
+#### Cache annotations
+
+- `@Cacheable`
+
+  - skip the method execution if key is present
+  - do the method execution only if the key is not preset & stire the result
+
+- `@CacheEvict`
+
+  - do the method execution always & evict the corresponding cache
+  - evict happens after method execution (use `beforeInvocation` property otherwise); if method throws an exception,the result will not be cached. If `beforeInvocation` is set to true, it will first remove the cached result and then store the new one. If an exception occurs happens in that case, nothing will happen, the old enty is removed and nothing is cached.
+
+- Twitter and Netflix use a similar approach: they cache feeds and refresh them from time to time (or on demand if the user requested it)
+
+- `@CachePut`
+
+  - do the method execution always & update the corresponding cache
+
+- Cache annotation limitations
+  - easy to use, but...
+  - limitations:
+    - no TTL support
+    - not a lot of flexibility
+    - Does not work with publisher types! (reactive clients reponses); because they need the result to be returned immediately and in reactive programming, that's not the case - you have a pipeline and it's executed when the subscriber needs it -> there is an addon for this
