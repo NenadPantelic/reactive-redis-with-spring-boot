@@ -2,15 +2,13 @@ package com.np.redisperformance.service.util;
 
 import com.np.redisperformance.entity.Product;
 import com.np.redisperformance.repository.ProductRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RMapReactive;
 import org.redisson.api.RedissonReactiveClient;
 import org.redisson.codec.TypedJsonJacksonCodec;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Slf4j
-@Service
+//@Service
 public class ProductCacheTemplate extends CacheTemplate<Integer, Product> {
 
     private final ProductRepository productRepository;

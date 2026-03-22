@@ -1,5 +1,6 @@
 package com.np.redisperformance.service.util;
 
+import com.np.redisperformance.entity.Product;
 import reactor.core.publisher.Mono;
 
 // Key, Entity (Value)
@@ -24,6 +25,8 @@ public abstract class CacheTemplate<K, V> {
                 .then(deleteFromCache(key));
     }
 
+
+    protected abstract Mono<Product> updateSource(Integer id, Product product);
 
     abstract protected Mono<V> getFromSource(K key);
 
