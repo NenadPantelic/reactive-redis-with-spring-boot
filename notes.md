@@ -307,6 +307,7 @@ We have to configure that mechanism to get the notification
 - Redisson supports `LocalCachedMap` -> it gets the complete copy of the hash (map) from Redis and keep it locally without making additional network calls; it's a local cache indeed
   - what if the hash (map) is updated in Redis server? In that case, Redis will notify the client that it should update the value stored locally with the new value.
   - it's not part of the Reactive Redisson client, but the plain Redisson client
+  - good when you have multiple Redis clients
 
 #### HyperLogLog
 
@@ -373,8 +374,28 @@ We have to configure that mechanism to get the notification
   - do the method execution always & update the corresponding cache
 
 - Cache annotation limitations
+
   - easy to use, but...
   - limitations:
     - no TTL support
     - not a lot of flexibility
     - Does not work with publisher types! (reactive clients reponses); because they need the result to be returned immediately and in reactive programming, that's not the case - you have a pipeline and it's executed when the subscriber needs it -> there is an addon for this
+
+- When you are doing the performance testing, first warm up the application and Redis
+  `./jmeter -n -t <path-to-jmx-file> 0l <path-to-jtl--report-file>`
+
+#### Redisson summary
+
+`SET` -> `Bucket/AtomicLong`
+`Hash` -> `Map, MapCache, LocalCachedMap`
+`List` -> `List, Queue, Deque, MessageQueue`
+`Set` -> `Set`
+`SortedSet` -> `SortedSet, PriorityQueue`
+
+- With it: Redis can behave like a message queue or priority queue
+
+- Cool features:
+
+1. Batch (to save network round trip, reactive objects are proxy objects)
+2. Transaction (to make a set of commands atomic)
+3. Pub/sub (message broadcasting, LocalCachedMap uses internally)
