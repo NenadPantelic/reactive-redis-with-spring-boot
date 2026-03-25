@@ -11,14 +11,18 @@ import reactor.core.publisher.Mono;
 public class ProductServiceV2 {
 
     private final CacheTemplate<Integer, Product> cacheTemplate;
+    private final ProductVisitService visitService;
 
-    public ProductServiceV2(CacheTemplate<Integer, Product> cacheTemplate) {
+    public ProductServiceV2(CacheTemplate<Integer, Product> cacheTemplate,
+                            ProductVisitService visitService) {
         this.cacheTemplate = cacheTemplate;
+        this.visitService = visitService;
     }
 
     // GET
     public Mono<Product> getProduct(int id) {
-        return cacheTemplate.get(id);
+        return cacheTemplate.get(id)
+                .doFirst(() -> this.visitService.addVisit(id));
     }
 
     // PATCH
