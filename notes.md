@@ -399,3 +399,19 @@ We have to configure that mechanism to get the notification
 1. Batch (to save network round trip, reactive objects are proxy objects)
 2. Transaction (to make a set of commands atomic)
 3. Pub/sub (message broadcasting, LocalCachedMap uses internally)
+
+### WebSocket
+
+- persistent connections between the client and the server
+
+- Server-Sent events vs WebSocket
+  - SSE
+    - 1 way
+    - text message
+    - e.g. stock price update/weather updates
+  - WebSocket
+    - 2 way
+    - ex: chat application
+- What if we have multiple instances (one client connects to one instance, the other one to some other instance)
+
+- WebSocket Test client Chrome extension

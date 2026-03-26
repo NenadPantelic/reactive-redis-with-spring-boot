@@ -1,4 +1,4 @@
-package com.np.redisspring.config;
+package com.np.redisspring.fib.config;
 
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
