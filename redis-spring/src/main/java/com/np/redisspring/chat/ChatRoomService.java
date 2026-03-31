@@ -1,5 +1,6 @@
 package com.np.redisspring.chat;
 
+import org.redisson.api.RListReactive;
 import org.redisson.api.RTopicReactive;
 import org.redisson.api.RedissonReactiveClient;
 import org.redisson.client.codec.StringCodec;
@@ -29,13 +30,16 @@ public class ChatRoomService implements WebSocketHandler {
         String room = getChatRoomName(session);
         // the channel for communication between two sides (their chat)
         RTopicReactive topic = this.client.getTopic(room, StringCodec.INSTANCE);
+        // to preserve the message history
+        RListReactive<String> list = this.client.getList("history:" + room, StringCodec.INSTANCE);
+
         session.receive()
                 // message received
-                .doOnNext(WebSocketMessage::getPayloadAsText)
+                .map(WebSocketMessage::getPayloadAsText)
                 // if we have multiple instances of the same WS server, we should broadcast the message received from a client
                 // so the server that's connected to the recipient could send that message to him
                 // broadcast it to other instance
-                .flatMap(topic::publish)
+                .flatMap(msg -> list.add(msg).then(topic.publish(msg)))
                 .doOnError(System.out::println)
                 .doFinally(s -> System.out.println("Subscribed finally " + s))
                 .subscribe();
@@ -43,6 +47,7 @@ public class ChatRoomService implements WebSocketHandler {
         // publisher
         // all text messages
         Flux<WebSocketMessage> flux = topic.getMessages(String.class)
+                .startWith(list.iterator()) // load when the connection starts; chat history
                 .map(session::textMessage)
                 .doOnError(System.out::println)
                 .doFinally(s -> System.out.println("Published finally " + s));
