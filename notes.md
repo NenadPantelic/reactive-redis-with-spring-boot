@@ -415,3 +415,46 @@ We have to configure that mechanism to get the notification
 - What if we have multiple instances (one client connects to one instance, the other one to some other instance)
 
 - WebSocket Test client Chrome extension
+
+### Auth
+
+- by default no auth
+- default user has admin privileges, no password is set for this user
+- Redis version < 6
+  - no username
+  - only password
+  - command: `AUTH [PASSWORD]`
+- Redis version >= 6
+
+  - username and password
+  - ACL - users with specific privileges
+
+- ACL commands:
+
+1. `acl list` - show current users
+2. `acl whoami` - current user
+3. `acl setuser [username] >[password]` - creates a user with password
+4. `acl setuser [username] nopass` - creates a user with no password
+5. `acl setuser [username] on` - enables the user
+6. `acl setuser [username] off` - disables the user
+7. `acl deluser [username]` - removes the user
+
+- `auth [user] [password]` - authenticate user with password
+
+- `acl setuser [username] >[password] on`
+
+  - `allcommands`/`+@all` - access to all commands in Redis
+  - `-get`/`-set` - no access to get, set commands
+  - `+@set`,`+@hash`,`+@list` - access set, hash and list-related commands
+  - `allkeys /~*` - access to all the keys in Redis
+  - `~numbers:*` - access to keys starting with `numbers:`
+  - `-@dangerous` - forbidding dangerous commands (e.g. `flushdb`, `get`)
+
+- `spring.redis.username`
+- `spring.redis.password`
+
+- Default user credentials:
+
+  - how to change it? - `config set requirepass <password>`
+
+- `https://redis.io/topics/config`
