@@ -458,3 +458,15 @@ We have to configure that mechanism to get the notification
   - how to change it? - `config set requirepass <password>`
 
 - `https://redis.io/topics/config`
+- **RSocket** is an application protocol for multiplexed, duplex communication over TCP, WebSocket, and other byte stream transports.
+
+- Microservices backend communication:
+  | Technology | Features | Request and response | Stream based communication |
+  |---------------- |----------------------------------------------- |---------------------- |---------------------------- |
+  | Spring Web | Sync/REST | Yes | No |
+  | Spring WebFlux | Reactive/REST | Yes | Yes |
+  | gRPC | Sync/Low Latency/Bi-directional streaming | Yes | Yes |
+  | rSocket | Reactive/Low Latency/Bi-directional streaming | Yes | Yes |
+  | Kafka | Event driven async | - | - |
+
+- Frontend (GraphQL), backend (gRPC or rSocket)
